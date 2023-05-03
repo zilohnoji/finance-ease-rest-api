@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +24,7 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PostMapping
-	@RequestMapping("/create")
+	@RequestMapping(path = "/create-alter", method = { RequestMethod.PUT, RequestMethod.POST })
 	public @ResponseBody void createClient(@Valid Client user) {
 		userRepository.save(user);
 	}
@@ -55,4 +54,9 @@ public class UserController {
 		userRepository.deleteById(id);
 	}
 
+	@GetMapping
+	@RequestMapping("/find-name")
+	public @ResponseBody List<Client> findByName(@RequestParam(name = "name") String name) {
+		return userRepository.findByNameContainingIgnoreCase(name);
+	}
 }
